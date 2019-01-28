@@ -2,6 +2,7 @@ package com.example.androidregisterandlogin;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,11 +25,16 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    private EditText name, email, password, c_password;
+    private EditText et_name, et_email, et_password, et_c_password;
+    private String name,email,password,c_password;
     private Button btn_regist;
     private ProgressBar loading;
-    //private static String URL_REGIST = "http://192.168.10.102:8888/mentordai/register.php";
-    private static String URL_REGIST = "https://avashadhikari.com.np/mentordai/register.php";
+    private static String URL_REGIST = "http://192.168.10.102:8888/mentordai/register.php";
+    //private static String URL_REGIST = "https://avashadhikari.com.np/mentordai/register.php";
+    //private static String URL_REGIST = "http://ceetlehero.com/mentordai/register.php";
+
+    RequestQueue requestQueue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,39 +42,76 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loading = findViewById(R.id.loading);
-        name = findViewById(R.id.name);
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        c_password = findViewById(R.id.c_password);
+        et_name = findViewById(R.id.name);
+        et_email = findViewById(R.id.email);
+        et_password = findViewById(R.id.password);
+        et_c_password = findViewById(R.id.c_password);
         btn_regist = findViewById(R.id.btn_regist);
 
         btn_regist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Regist();
+                if(check_validation()){
+                     Regist();
+                }else{
+                    Toast.makeText(MainActivity.this,"Validation failed ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+    private Boolean check_validation(){
+        Boolean validate = true;
+        email = this.et_email.getText().toString().trim();
+        name = this.et_name.getText().toString().trim();
+        if(!validateEmail(email)){
+            validate = false;
+            et_email.setError("Invalid email");
+        }
+        if(!validateName(name)){
+            validate = false;
+            et_name.setError("Invalid name");
+        }
+        return validate;
+    }
+    private Boolean validateName(String name){
+        Boolean validate = true;
+        if(name.isEmpty() || name.length() > 32){
+            validate = false;
+        }
+        return validate;
+    }
+
+    private Boolean validateEmail(String vemail){
+        email = vemail;
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
+
+
     private void Regist(){
         loading.setVisibility(View.VISIBLE);
         btn_regist.setVisibility(View.GONE);
 
-        final String name = this.name.getText().toString().trim();
-        final String email = this.email.getText().toString().trim();
-        final String password = this.password.getText().toString().trim();
-
+        final String name = this.name;
+        final String email = this.email;
+        final String password = this.et_password.getText().toString().trim();
+        final String c_password = this.et_c_password.getText().toString().trim();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try{
+                            Log.d("TAG",response);
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
-
                             if (success.equals("1")) {
                                 Toast.makeText(MainActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
+                                btn_regist.setVisibility(View.VISIBLE);
+                            }else if(success.equals("2")){
+                                Toast.makeText(MainActivity.this, "Please verify your password", Toast.LENGTH_SHORT).show();
+                                btn_regist.setVisibility(View.VISIBLE);
                             }
 
 
@@ -96,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
                 params.put("name", name);
                 params.put("email", email);
                 params.put("password", password);
+                params.put("c_password", c_password);
                 return params;
             }
         };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
 

@@ -64,6 +64,7 @@
 
     <Button
         android:id="@+id/btn_regist"
+        android:layout_marginTop="30dp"
         android:background="@color/colorPrimary"
         android:textColor="@android:color/white"
         android:text="@string/btn_register"
