@@ -87,8 +87,13 @@ public class LoginActivity extends AppCompatActivity {
                             //Toast.makeText(LoginActivity.this, "success login \n Your name: " + name + "Your Email "+ email, Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this,MentorActivity.class));
                             loading.setVisibility(View.GONE);
-                            btn_login.setVisibility(View.GONE);
+                            btn_login.setVisibility(View.VISIBLE);
                         }
+                    }else if(success.equals("2")){
+                        Toast.makeText(LoginActivity.this, "Invalid password", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(success.equals("3")){
+                        Toast.makeText(LoginActivity.this, "Invalid email", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -98,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LoginActivity.this, "Error" + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         })
         {
