@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private EditText et_name, et_email, et_password, et_c_password;
     private String name,email,password,c_password;
     private Button btn_regist;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
         loading = findViewById(R.id.loading);
         et_name = findViewById(R.id.name);
@@ -54,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 if(check_validation()){
                      Regist();
                 }else{
-                    Toast.makeText(MainActivity.this,"Validation failed ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this,"Validation failed ", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
-    private Boolean check_validation(){
-        Boolean validate = true;
+    private boolean check_validation(){
+        boolean validate = true;
         email = this.et_email.getText().toString().trim();
         name = this.et_name.getText().toString().trim();
         if(!validateEmail(email)){
@@ -75,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
         }
         return validate;
     }
-    private Boolean validateName(String name){
-        Boolean validate = true;
+    private boolean validateName(String name){
+        boolean validate = true;
         if(name.isEmpty() || name.length() > 32){
             validate = false;
         }
         return validate;
     }
 
-    private Boolean validateEmail(String vemail){
+    private boolean validateEmail(String vemail){
         email = vemail;
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         return email.matches(emailPattern);
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void Regist(){
-        loading.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
         btn_regist.setVisibility(View.GONE);
 
         final String name = this.name;
@@ -107,17 +107,22 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
                             if (success.equals("1")) {
-                                Toast.makeText(MainActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
                                 btn_regist.setVisibility(View.VISIBLE);
                             }else if(success.equals("2")){
-                                Toast.makeText(MainActivity.this, "Please verify your password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Please verify your password", Toast.LENGTH_SHORT).show();
                                 btn_regist.setVisibility(View.VISIBLE);
                             }
+//
+//                            else if(success.equals("3")){
+//                                Toast.makeText(RegisterActivity.this, "unique already exist", Toast.LENGTH_SHORT).show();
+//                                btn_regist.setVisibility(View.VISIBLE);
+//                            }
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(MainActivity.this, "Register Error! " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Register Error! " + e.toString(), Toast.LENGTH_SHORT).show();
                             loading.setVisibility(View.GONE);
                             btn_regist.setVisibility(View.VISIBLE);
                         }
@@ -126,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
                         loading.setVisibility(View.GONE);
                         btn_regist.setVisibility(View.VISIBLE);
                     }
