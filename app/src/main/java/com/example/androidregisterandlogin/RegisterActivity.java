@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements ValidationInterface{
     private EditText et_name, et_email, et_password, et_c_password;
     private String name,email,password,c_password;
     private Button btn_regist;
@@ -75,20 +75,18 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return validate;
     }
-    private boolean validateName(String name){
-        boolean validate = true;
-        if(name.isEmpty() || name.length() > 32){
-            validate = false;
-        }
-        return validate;
+
+    @Override
+    public boolean validateName(String name) {
+        ValidationInterface vi = new FormValidate();
+        return vi.validateName(name);
     }
 
-    private boolean validateEmail(String vemail){
-        email = vemail;
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        return email.matches(emailPattern);
+    @Override
+    public boolean validateEmail(String vemail) {
+        ValidationInterface vi = new FormValidate();
+        return vi.validateEmail(vemail);
     }
-
 
     private void Regist(){
         loading.setVisibility(View.GONE);
@@ -153,4 +151,5 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
+
 }
